@@ -50,7 +50,7 @@ pipeline {
                     sh """
                         docker run --name vikas -d ${imageName}
                         sleep 5  # Wait for a while to make sure the container is up
-                        docker exec -it vikas 
+                        docker exec -it vikas /bin/bash
                         sleep 2
                         git --version
                     """
