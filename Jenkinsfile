@@ -47,10 +47,12 @@ pipeline {
         stage('Run Docker Container and Display Git Version') {
             steps {
                 script {
-                    // Run the container with the name 'vikas'
+                    // Ensure the container runs with the correct image name
+                    def imageName = 'image-webhook-pipeline'
+
                     echo "Running Docker container with name 'vikas'"
                     sh '''
-                        docker run --name vikas -d ${imageName}
+                        docker run --name vikas -d ${imageName}  # Pass the image name
                         docker exec vikas git --version
                     '''
                 }
