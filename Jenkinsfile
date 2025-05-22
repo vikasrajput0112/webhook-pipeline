@@ -43,5 +43,27 @@ pipeline {
                 }
             }
         }
+
+        stage('Run Docker Container and Display Git Version') {
+            steps {
+                script {
+                    // Run the container with the name 'vikas'
+                    echo "Running Docker container with name 'vikas'"
+                    sh '''
+                        docker run --name vikas -d ${imageName}
+                        docker exec vikas git --version
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Cleanup step to stop and remove the container after the pipeline completes
+            sh '''
+                docker rm -f vikas || true
+            '''
+        }
     }
 }
