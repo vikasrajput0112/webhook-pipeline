@@ -9,19 +9,14 @@ pipeline {
         }
 
         stage('Install git and wget') {
-            steps {
-                sh '''
-                    echo "Updating package list..."
-                    sudo apt-get update -y
-
-                    echo "Installing git..."
-                    sudo apt-get install -y git
-
-                    echo "Installing wget..."
-                    sudo apt-get install -y wget
-                '''
-            }
-        }
+    steps {
+        sh '''
+            echo Updating package list...
+            apt-get update -y
+            apt-get install -y git wget
+        '''
+    }
+}
 
         stage('Verify Installation') {
             steps {
