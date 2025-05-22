@@ -33,13 +33,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Assuming Dockerfile is in the root of the repo
                     def imageName = 'image-webhook-pipeline'
-                    def dockerBuildCommand = "docker build -t ${imageName} ."
-                    
-                    // Build the Docker image
                     echo "Building Docker image: ${imageName}"
-                    sh dockerBuildCommand
+                    sh "docker build -t ${imageName} ."
                 }
             }
         }
@@ -48,10 +44,12 @@ pipeline {
             steps {
                 script {
                     def imageName = 'image-webhook-pipeline'
-
                     echo "Running Docker container with name 'vikas'"
+
+                    // Run the container in detached mode and keep it running with bash
                     sh """
-                        docker run --name vikas -d ${imageName}  # Pass the image name
+                        docker run --name vikas -d ${imageName}
+                        sleep 5  # Wait for a while to make sure the container is up
                         docker exec vikas git --version
                     """
                 }
