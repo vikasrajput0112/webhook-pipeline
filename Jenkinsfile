@@ -46,23 +46,20 @@ pipeline {
                     def imageName = 'image-webhook-pipeline'
                     echo "Running Docker container with name 'vikas'"
 
-                    // Run container detached and keep it alive with tail -f /dev/null
                     sh """
-                        docker run --name vikas -d ${imageName} tail -f /dev/null
+                        # Run new container detached; exit if fails
+                        docker run --name vikas -d ${imageName} tail -f /dev/null || exit 1
+
                         sleep 5
+
+                        # List containers to debug if needed
+                        docker ps -a
+
+                        # Execute git version inside container
                         docker exec vikas git --version
                     """
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Cleanup step to stop and remove the container after the pipeline completes
-            sh '''
-                docker rm -f vikas || true
-            '''
         }
     }
 }
