@@ -18,8 +18,8 @@ pipeline {
             steps {
                 sh '''
                     echo Updating package list...
-                    sudo apt-get update -y
-                    sudo apt-get install -y git wget
+                    apt-get update -y
+                    apt-get install -y git wget
                 '''
             }
         }
@@ -81,7 +81,7 @@ pipeline {
                     sh '''
                         if ! command -v sshpass &> /dev/null; then
                             echo "Installing sshpass..."
-                            sudo apt-get update && sudo apt-get install -y sshpass
+                            apt-get update && apt-get install -y sshpass
                         fi
                     '''
 
