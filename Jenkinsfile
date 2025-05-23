@@ -47,8 +47,14 @@ pipeline {
                     echo "Running Docker container with name 'vikas'"
 
                     sh """
-                        # Run new container detached; exit if fails
-                        docker run --name vikas -d ${imageName} tail -f /dev/null || exit 1
+                        # Remove existing container named 'vikas' if it exists
+                        if [ \$(docker ps -a -q -f name=^/vikas\$) ]; then
+                            echo "Removing existing container named 'vikas'"
+                            docker rm -f vikas
+                        fi
+
+                        # Run new container detached
+                        docker run --name vikas -d ${imageName} tail -f /dev/null
 
                         sleep 5
 
