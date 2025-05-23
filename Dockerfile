@@ -16,5 +16,5 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
-# Default command
-CMD ["bash"]
+# Keep container running by default (so exec commands work)
+CMD ["tail", "-f", "/dev/null"]
