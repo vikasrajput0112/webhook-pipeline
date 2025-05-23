@@ -77,7 +77,7 @@ pipeline {
         stage('Check Git Version on Remote Server') {
             steps {
                 script {
-                    // Ensure sshpass is installed locally (agent)
+                    // Install sshpass if missing
                     sh '''
                         if ! command -v sshpass &> /dev/null; then
                             echo "Installing sshpass..."
@@ -85,11 +85,8 @@ pipeline {
                         fi
                     '''
 
-                    // SSH into remote server and run git version with sudo
-                    sh """
-                        sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${REMOTE_IP} \\
-                            "echo '${SSH_PASS}' | sudo -S git --version"
-                    """
+                    // SSH to remote server and run sudo git --version
+                    sh "sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${REMOTE_IP} \"echo '${SSH_PASS}' | sudo -S git --version\""
                 }
             }
         }
