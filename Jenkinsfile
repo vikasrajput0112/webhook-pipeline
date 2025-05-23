@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        REMOTE_IP = '192.168.136.141'
+        SSH_USER = 'ubuntu'
+        SSH_PASS = 'ubuntu'
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
@@ -12,8 +18,8 @@ pipeline {
             steps {
                 sh '''
                     echo Updating package list...
-                    apt-get update -y
-                    apt-get install -y git wget
+                    sudo apt-get update -y
+                    sudo apt-get install -y git wget
                 '''
             }
         }
@@ -63,6 +69,26 @@ pipeline {
 
                         # Execute git version inside container
                         docker exec vikas git --version
+                    """
+                }
+            }
+        }
+
+        stage('Check Git Version on Remote Server') {
+            steps {
+                script {
+                    // Ensure sshpass is installed locally (agent)
+                    sh '''
+                        if ! command -v sshpass &> /dev/null; then
+                            echo "Installing sshpass..."
+                            sudo apt-get update && sudo apt-get install -y sshpass
+                        fi
+                    '''
+
+                    // SSH into remote server and run git version with sudo
+                    sh """
+                        sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${REMOTE_IP} \\
+                            "echo '${SSH_PASS}' | sudo -S git --version"
                     """
                 }
             }
