@@ -9,7 +9,7 @@ fi
 
 # --------- Configuration (update as needed) ---------
 GITHUB_REPO="vikasrajput0112/webhook-pipeline"     # Format: username/repo
-JENKINS_WEBHOOK_URL="http://your-jenkins-url/github-webhook/"  # Replace with your Jenkins webhook endpoint
+JENKINS_WEBHOOK_URL="http://124.123.16.235:8079/github-webhook/"  # Replace with your Jenkins webhook endpoint
 GITHUB_API="https://api.github.com"
 
 # --------- Token Validation ---------
