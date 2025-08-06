@@ -6,13 +6,18 @@ pipeline {
         GITHUB_TOKEN = credentials('github-jenkins')
     }
 
-    stages {
+    
         stage('Setup Webhook') {
-            steps {
-                sh 'bash ./scripts/setup-webhook.sh'
-            }
-        }
+    steps {
+        sh '''
+            apt-get update && apt-get install -y jq || true
+            bash ./scripts/setup-webhook.sh
+        '''
+    }
+}
 
+
+        
         stage('Build') {
             steps {
                 echo 'Build successful.'
