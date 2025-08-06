@@ -1,13 +1,9 @@
-# Use official Node.js image
 FROM node:20-alpine
 
-# Set working directory
-WORKDIR /app
+# Install curl and jq for GitHub API interactions
+RUN apk add --no-cache curl jq
 
-# Copy files and install dependencies
+WORKDIR /app
 COPY . .
 
-RUN npm install
-
-# Run a test server
 CMD ["npm", "start"]
