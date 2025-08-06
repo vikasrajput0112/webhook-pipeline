@@ -5,13 +5,16 @@ pipeline {
         GITHUB_TOKEN = credentials('github-jenkins')
     }
 
-    stages {
-        stage('Setup Webhook') {
-            steps {
-                // Use `sh` to avoid chmod issues
-                 sh 'bash ./scripts/setup-webhook.sh'
+   stage('Setup Webhook') {
+    steps {
+        sh '''
+            apk add --no-cache dos2unix || true
+            dos2unix ./scripts/setup-webhook.sh
+            bash ./scripts/setup-webhook.sh
+        '''
+                        }
             }
-        }
+
      
 
         stage('Build') {
