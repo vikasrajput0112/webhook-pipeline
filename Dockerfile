@@ -1,9 +1,5 @@
 FROM node:20-alpine
-
-# Install curl and jq for GitHub API interactions
-RUN apk add --no-cache curl jq
-
+RUN apk add --no-cache curl jq bash
 WORKDIR /app
 COPY . .
-
 CMD ["npm", "start"]
