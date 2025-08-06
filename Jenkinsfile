@@ -2,40 +2,20 @@ pipeline {
     agent any
 
     environment {
-        REPO_NAME = "your-repo-name"
-        IMAGE_NAME = "ghcr.io/your-org-name/${REPO_NAME}:${env.BUILD_NUMBER}"
-    }
-
-    triggers {
-        githubPush() // 👈 This auto-triggers the pipeline via webhook on push
+        GITHUB_TOKEN = credentials('github_token') // 🔐 secret text credential in Jenkins
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Setup Webhook') {
             steps {
-                checkout scm
+                sh 'chmod +x ./scripts/setup_webhook.sh && ./scripts/setup_webhook.sh'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}")
-                }
-            }
-        }
-
-        stage('Push Docker Image (Optional)') {
-            when {
-                expression { return false } // disable by default
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'ghcr-token', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
-                    script {
-                        sh "echo $TOKEN | docker login ghcr.io -u $USERNAME --password-stdin"
-                        sh "docker push ${IMAGE_NAME}"
-                    }
-                }
+                echo 'Running build...'
+                sh 'docker build -t test-image .'
             }
         }
     }
