@@ -7,29 +7,46 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
-# Config — update as needed
-GITHUB_REPO="vikasrajput0112/webhook-pipeline"  # Format: username/repo
-JENKINS_WEBHOOK_URL="http://your-jenkins-url/github-webhook/"  # Replace with your Jenkins public URL
+# --------- Configuration (update as needed) ---------
+GITHUB_REPO="vikasrajput0112/webhook-pipeline"     # Format: username/repo
+JENKINS_WEBHOOK_URL="http://your-jenkins-url/github-webhook/"  # Replace with your Jenkins webhook endpoint
 GITHUB_API="https://api.github.com"
 
-# Validate token
+# --------- Token Validation ---------
 if [ -z "${GITHUB_TOKEN:-}" ]; then
-  echo "❌ GITHUB_TOKEN not set. Inject it via Jenkins credentials."
+  echo "❌ GITHUB_TOKEN is not set. Please inject it as a Jenkins credential."
   exit 1
 fi
 
-# Check if webhook already exists
 echo "🔍 Checking for existing webhook..."
-EXISTING=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}"   "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" |   jq -r ".[] | select(.config.url == \"${JENKINS_WEBHOOK_URL}\")")
+
+# --------- GitHub API Request ---------
+RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+  "${GITHUB_API}/repos/${GITHUB_REPO}/hooks")
+
+# Debug print the response
+echo "📦 GitHub API raw response:"
+echo "$RESPONSE" | jq .
+
+# --------- Check Response Type ---------
+if ! echo "$RESPONSE" | jq -e 'type == "array"' > /dev/null; then
+  echo "❌ ERROR: GitHub did not return an array. Possible authentication error."
+  exit 1
+fi
+
+# --------- Check for Existing Webhook ---------
+EXISTING=$(echo "$RESPONSE" | jq -r ".[] | select(.config.url == \"${JENKINS_WEBHOOK_URL}\")")
 
 if [ -n "$EXISTING" ]; then
-  echo "✅ Webhook already exists. Skipping."
+  echo "✅ Webhook already exists. Skipping creation."
   exit 0
 fi
 
-# Create new webhook
+# --------- Create Webhook ---------
 echo "➕ Creating webhook..."
-curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}"   -H "Content-Type: application/json"   -d '{
+curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
     "name": "web",
     "active": true,
     "events": ["push"],
@@ -37,6 +54,7 @@ curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}"   -H "Content-Type: ap
       "url": "'"${JENKINS_WEBHOOK_URL}"'",
       "content_type": "json"
     }
-  }'   "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" | jq
+  }' \
+  "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" | jq .
 
-echo "✅ Webhook setup complete."
+echo "✅ Webhook created successfully."
