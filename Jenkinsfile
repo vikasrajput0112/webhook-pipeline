@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'jenkins-agent-with-jq:latest' // Change to your built/pushed image if needed
+        }
+    }
 
     environment {
         GITHUB_TOKEN = credentials('github-jenkins')
@@ -12,7 +16,6 @@ pipeline {
                     echo "🔍 Checking if jq is available..."
                     if ! command -v jq &> /dev/null; then
                         echo "❌ ERROR: jq is not installed in this Jenkins agent."
-                        echo "➡️  Please install jq in the agent or use a Docker image with jq."
                         exit 1
                     fi
 
