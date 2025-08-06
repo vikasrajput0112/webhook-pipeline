@@ -20,9 +20,7 @@ fi
 
 # Check if webhook already exists
 echo "🔍 Checking for existing webhook..."
-EXISTING=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-  "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" | \
-  jq -r ".[] | select(.config.url == \"${JENKINS_WEBHOOK_URL}\")")
+EXISTING=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}"   "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" |   jq -r ".[] | select(.config.url == \"${JENKINS_WEBHOOK_URL}\")")
 
 if [ -n "$EXISTING" ]; then
   echo "✅ Webhook already exists. Skipping."
@@ -31,9 +29,7 @@ fi
 
 # Create new webhook
 echo "➕ Creating webhook..."
-curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d '{
+curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}"   -H "Content-Type: application/json"   -d '{
     "name": "web",
     "active": true,
     "events": ["push"],
@@ -41,7 +37,6 @@ curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
       "url": "'"${JENKINS_WEBHOOK_URL}"'",
       "content_type": "json"
     }
-  }' \
-  "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" | jq
+  }'   "${GITHUB_API}/repos/${GITHUB_REPO}/hooks" | jq
 
 echo "✅ Webhook setup complete."
