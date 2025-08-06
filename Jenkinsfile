@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'jenkins-agent-with-jq:latest' // Replace with full image name if pushing to DockerHub
-        }
-    }
+    agent any
 
     environment {
         GITHUB_TOKEN = credentials('github-jenkins')
@@ -13,9 +9,8 @@ pipeline {
         stage('Setup Webhook') {
             steps {
                 sh '''
-                    echo "🔍 Checking if jq is available..."
                     if ! command -v jq &> /dev/null; then
-                        echo "❌ jq not installed. Exiting."
+                        echo "❌ jq is not installed. Please install jq or use a Docker agent with jq."
                         exit 1
                     fi
                     bash ./scripts/setup-webhook.sh
