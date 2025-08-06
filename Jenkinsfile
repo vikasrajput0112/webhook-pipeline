@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Setup Webhook') {
             steps {
-                sh 'chmod +x ./scripts/setup_webhook.sh && ./scripts/setup_webhook.sh'
+                sh 'chmod +x ./scripts/setup-webhook.sh && ./scripts/setup-webhook.sh'
             }
         }
 
