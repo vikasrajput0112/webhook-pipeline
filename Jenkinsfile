@@ -5,13 +5,16 @@ pipeline {
         GITHUB_TOKEN = credentials('github-jenkins') // 🔐 secret text credential in Jenkins
     }
 
-    stages {
+ 
         stage('Setup Webhook') {
-            steps {
-                sh 'chmod +x ./scripts/setup-webhook.sh && ./scripts/setup-webhook.sh'
+    steps {
+        sh 'sh ./scripts/setup-webhook.sh'
             }
         }
 
+
+
+        
         stage('Build') {
             steps {
                 echo 'Running build...'
