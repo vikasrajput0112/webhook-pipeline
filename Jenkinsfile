@@ -2,24 +2,22 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_TOKEN = credentials('github-jenkins') // 🔐 secret text credential in Jenkins
+        GITHUB_TOKEN = credentials('github_token')
     }
 
- 
+    stages {
         stage('Setup Webhook') {
-    steps {
-        sh 'sh ./scripts/setup-webhook.sh'
+            steps {
+                // Use `sh` to avoid chmod issues
+                sh 'sh ./scripts/setup-webhook.sh'
             }
         }
 
-
-
-        
         stage('Build') {
             steps {
                 echo 'Running build...'
-                sh 'docker build -t test-image .'
+                sh 'docker build -t webhook-test-image .'
             }
         }
     }
-
+}
