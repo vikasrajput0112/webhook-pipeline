@@ -1,5 +1,10 @@
+
 FROM node:20-alpine
-RUN apk add --no-cache curl jq bash
+
+# Install jq and bash
+RUN apk add --no-cache curl bash jq
+
 WORKDIR /app
 COPY . .
+
 CMD ["npm", "start"]
