@@ -9,10 +9,8 @@ pipeline {
         stage('Setup Webhook') {
             steps {
                 sh '''
-                    if ! command -v jq &> /dev/null; then
-                        echo "❌ jq is not installed. Please install jq or use a Docker agent with jq."
-                        exit 1
-                    fi
+                    echo "✅ jq found at: $(command -v jq)"
+                    echo "📦 jq version: $(jq --version)"
                     bash ./scripts/setup-webhook.sh
                 '''
             }
