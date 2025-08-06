@@ -9,9 +9,10 @@ pipeline {
         stage('Setup Webhook') {
             steps {
                 // Use `sh` to avoid chmod issues
-                sh 'sh ./scripts/setup-webhook.sh'
+                 sh 'bash ./scripts/setup-webhook.sh'
             }
         }
+     
 
         stage('Build') {
             steps {
